@@ -53,6 +53,7 @@ module.exports.authUser = async (req,res,next) => {
 
         if (user) {
             user = JSON.parse(user)
+
         }
 
         if (!user) {

@@ -1,7 +1,6 @@
 const userModel = require("../models/user.model");
 
 module.exports.createUser = async ({ username, email, password }) => {
-    console.log("Received data: ", { username, email, password });
 
     if (!username || !email || !password) {
         console.error("Missing fields!");
