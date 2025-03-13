@@ -1,3 +1,8 @@
+const { Server, Socket } = require("socket.io");
+const userModel = require("../models/user.model");
+const messageModel = require("../models/message.model")
+const mongoose = require("mongoose")
+
 function initSocket(server) {
     console.log("Socket.io initialized");
 
