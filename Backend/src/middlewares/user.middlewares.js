@@ -46,6 +46,13 @@ module.exports.authUser = async (req,res,next) => {
             return res.status(400).json({message:"unauthorized"})
         }
 
+        const isTokenBlackListed = await redis.get(`blacklist:${token}`)
+
+        if(isTokenBlackListed){
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+
+
         const decoded = userModel.verifyToken(token)
         
 
@@ -67,6 +74,7 @@ module.exports.authUser = async (req,res,next) => {
         }
 
         req.user = user;
+        req.tokenData = { ...decoded};
     
         next()
 

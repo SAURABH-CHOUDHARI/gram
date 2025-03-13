@@ -50,11 +50,24 @@ userSchema.methods.generateToken = function () {
         _id: this._id,
         username: this.username,
         email: this.email,
-    }, config.JWT_KEY);
+    },
+        config.JWT_KEY,
+        { expiresIn: "3d" }
+    );
 };
 
 userSchema.statics.verifyToken = function (token) {
-    return jwt.verify(token, config.JWT_KEY);
+    try {
+        return jwt.verify(token, config.JWT_KEY); 
+    } catch (error) {
+        if (error.name === "TokenExpiredError") {
+            return { error: "Token has expired" };
+        }
+        if (error.name === "JsonWebTokenError") {
+            return { error: "Invalid token" };
+        }
+        return { error: "Authentication failed" };
+    }
 };
 
 userSchema.statics.hashPassword = async function (password) {
