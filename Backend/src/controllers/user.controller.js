@@ -1,12 +1,14 @@
 const userModel = require("../models/user.model")
 const userService = require("../services/user.service")
+const redis = require("../services/redis.service");
+const messageModel = require("../models/message.model")
 
 
 module.exports.registerController = async (req, res) => {
     try {
         const { username, email, password } = req.body
-        
-        const user =  await userService.createUser({ username, email, password });
+
+        const user = await userService.createUser({ username, email, password });
         const token = user.generateToken()
 
         return res.status(201).json({ token, user })
@@ -16,12 +18,11 @@ module.exports.registerController = async (req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
-
 module.exports.loginController = async (req, res) => {
     try {
         const { email, password } = req.body
 
-        const isUserExist = await userService.loginUser({email, password})
+        const isUserExist = await userService.loginUser({ email, password })
 
         const token = isUserExist.generateToken()
 
@@ -162,3 +163,40 @@ module.exports.toggleFollow = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+module.exports.logout = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const token = authHeader.split(" ")[1];
+        const timeRemaining = Math.floor(req.tokenData.exp * 1000 - Date.now()) / 1000;
+
+        if (timeRemaining > 0) {
+            await redis.set(`blacklist:${token}`, true, "EX", Math.floor(timeRemaining));
+        }
+
+        return res.status(200).json({ message: "Logout successful" });
+    } catch (error) {
+        console.error("Logout error:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+module.exports.getMessages = async (req, res) => {
+    try {
+        const messages = await messageModel.find({
+            $or: [{
+                sender: req.user._id,
+                receiver: req.query.userId
+            },{
+                sender: req.query.userId,
+                receiver: req.user._id
+            }]
+        })
+        res.status(200).json({messages,message:" Messages are successfully getched"});
+    } catch (err) {
+        console.log(err)
+        return res.status(500).send(err.message);
+    }
+}

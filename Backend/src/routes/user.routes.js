@@ -9,5 +9,7 @@ router.get("/profile", userMiddleware.authUser ,userCotroller.profileController)
 router.get("/search", userMiddleware.authUser ,userCotroller.search)
 router.post("/searched-profile", userMiddleware.authUser ,userCotroller.getSearchedProfile)
 router.patch("/togglefollow", userMiddleware.authUser ,userCotroller.toggleFollow)
+router.get("/logout", userMiddleware.authUser ,userCotroller.logout)
+router.get("/get-messages",userMiddleware.authUser,userCotroller.getMessages)
 
 module.exports = router
