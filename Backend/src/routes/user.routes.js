@@ -3,6 +3,7 @@ const router = Router()
 const userCotroller = require("../controllers/user.controller")
 const userMiddleware = require("../middlewares/user.middlewares")
 
+router.get("/auth",userMiddleware.authUser,userCotroller.auth)
 router.post("/register",userMiddleware.registerValidation, userCotroller.registerController)
 router.post("/login",userMiddleware.loginValidation ,userCotroller.loginController)
 router.get("/profile", userMiddleware.authUser ,userCotroller.profileController)

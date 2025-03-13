@@ -1,7 +1,8 @@
 const userModel = require("../models/user.model")
 const userService = require("../services/user.service")
 const redis = require("../services/redis.service");
-const messageModel = require("../models/message.model")
+const messageModel = require("../models/message.model");
+const { json } = require("express");
 
 
 module.exports.registerController = async (req, res) => {
@@ -198,5 +199,13 @@ module.exports.getMessages = async (req, res) => {
     } catch (err) {
         console.log(err)
         return res.status(500).send(err.message);
+    }
+}
+module.exports.auth =  (req,res) => {
+    try{
+        res.status(200).json({status:true})
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({messsage:"Internal Server Error"})
     }
 }
