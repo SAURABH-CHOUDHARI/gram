@@ -2,35 +2,37 @@ const postModel = require("../models/post.model")
 const userModel = require("../models/user.model")
 const commentModel = require("../models/comment.model");
 const commentLikeModel = require("../models/commentLike.model");
+const aiService = require("../services/ai.service")
 
 module.exports.createPostController = async (req, res) => {
     try {
+        const userId = req.user._id;
+        let { caption } = req.body;
 
-        const { caption } = req.body
-        const userId = req.user._id
-        if (!caption) {
-            return res.status(400).json({ message: "caption is required" })
+        // Generate a caption if none is provided
+        if (!caption && req.file) {
+            caption = await aiService.generateCaptionFromImageBuffer(req.file.buffer);
         }
+
         const newPost = await postModel.create({
             media: req.body.image,
             caption,
             author: userId,
-        })
-        const user = await userModel.findByIdAndUpdate(
-            req.user._id,
-            {
-                $push: { posts: newPost._id }
-            },
+        });
+
+        // Add post to user's list
+        await userModel.findByIdAndUpdate(
+            userId,
+            { $push: { posts: newPost._id } },
             { new: true }
         );
 
-
-        res.status(201).json({ newPost })
+        res.status(201).json({ newPost });
     } catch (err) {
-        console.log(err)
-        res.status(500).json({ message: "Server error", error: error.message });
+        console.error("Error creating post:", err);
+        res.status(500).json({ message: "Server error", error: err.message });
     }
-}
+};
 module.exports.likePostController = async (req, res) => {
     try {
         const { postId } = req.body;

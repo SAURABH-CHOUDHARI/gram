@@ -9,6 +9,7 @@ const _config = {
     REDIS_HOST: process.env.REDIS_HOST,
     REDIS_PORT : process.env.REDIS_PORT,
     REDIS_PASSWORD : process.env.REDIS_PASSWORD,
+    GEMINI_AI_KEY: process.env.GEMINI_AI_KEY,
 }
 
 const config = Object.freeze(_config);
