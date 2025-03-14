@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "../Views/Register";
 import Login from "../Views/Login";
 import Profile from "../Views/Profile";
@@ -12,7 +12,7 @@ import SearchProfile from "../Views/SearchProfile";
 
 const AppRoutes = () => {
     return (
-        <Router>
+        <Router basename="/">
             <Routes>
                 <Route path="/home" element={<Protected><Home /></Protected>} />
                 <Route path="/register" element={<Register />} />
