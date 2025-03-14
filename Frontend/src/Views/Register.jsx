@@ -1,98 +1,130 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import Dock from "../components/Dock";
-import { useNavigate } from 'react-router-dom';
-import Icons from '../assets/Icons';
+import { useNavigate, Link } from 'react-router-dom';
 import SpotlightCard from '../components/SpotlightCard';
-
-
 
 const Register = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("")
+    const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const Navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+        setIsLoading(true);
+        setError("");
 
         axios.post('https://gram-ks17.onrender.com/users/register', {
             username,
             email,
             password
         }).then(response => {
-            localStorage.setItem("token", response.data.token)
-            Navigate("/profile")
+            localStorage.setItem("token", response.data.token);
+            Navigate("/profile");
         }).catch(err => {
-            
-            setError(err.response.data.message)
-        })
-
-
-
-        setUsername('');
-        setEmail('');
-        setPassword('');
+            setError(err.response?.data?.message || "Registration failed. Please try again.");
+            setIsLoading(false);
+        });
     };
 
 
-    const items = [
-        { icon: <img src={Icons.Login} alt="Login" width={40} height={40} />, label: 'Login', onClick: () => Navigate("/login") },
-
-    ];
-
     return (
-        <div className='flex flex-col gap-2 items-center justify-center min-h-screen text-zinc-200 bg-black '>
-            <SpotlightCard className="custom-spotlight-card" spotlightColor="rgba(0, 129, 155, 0.3)">
+        <div className='min-h-screen bg-black text-white flex flex-col items-center justify-center relative'>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(101,39,149,0.15),transparent_50%)]"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.15),transparent_50%)]"></div>
+            
+            <div className="container mx-auto px-4 py-12 flex flex-col items-center z-10">
+                {/* Logo/Branding */}
+                <div className="mb-8 text-center">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+                        Gram
+                    </h1>
+                    <p className="text-gray-400 mt-2">Create your account to get started</p>
+                </div>
+                
+                <SpotlightCard className="custom-spotlight-card w-full max-w-md" spotlightColor="rgba(0, 129, 155, 0.3)">
+                    <div className='bg-black border-4 border-zinc-800 p-6 rounded-xl shadow-2xl w-full'>
+                        <h2 className='text-2xl font-semibold text-center mb-6'>Join Gram</h2>
+                        
+                        <form className='flex flex-col gap-5' onSubmit={handleSubmit}>
+                            <div className="space-y-2">
+                                <label className="text-sm text-gray-400 pl-1">Username</label>
+                                <input
+                                    type='text'
+                                    placeholder='Choose a username'
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className='w-full p-3 border-4 border-zinc-800 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all'
+                                    required
+                                    minLength={3}
+                                    maxLength={20}
+                                />
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <label className="text-sm text-gray-400 pl-1">Email</label>
+                                <input
+                                    type='email'
+                                    placeholder='Enter your email'
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className='w-full p-3 border-4 border-zinc-800 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all'
+                                    required
+                                    minLength={3}
+                                    maxLength={20}
+                                />
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <label className="text-sm text-gray-400 pl-1">Password</label>
+                                <input
+                                    type='password'
+                                    placeholder='Create a password'
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className='w-full p-3 border-4 border-zinc-800 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all'
+                                    required
+                                    minLength={6}
+                                    maxLength={20}
+                                />
+                                <p className="text-xs text-gray-500 pl-1 mt-1">Password must be 6-20 characters</p>
+                            </div>
+                            
+                            <button
+                                type='submit'
+                                disabled={isLoading}
+                                className='bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium py-4 px-5 rounded-md hover:opacity-90 transition duration-300 mt-4 flex items-center justify-center'
+                            >
+                                {isLoading ? (
+                                    <svg className="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                ) : "Create Account"}
+                            </button>
+                        </form>
+                        
+                        {error && (
+                            <div className="mt-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md text-red-400 text-center text-sm">
+                                {error}
+                            </div>
+                        )}
+                        
+                        <div className="mt-6 text-center">
+                            <p className="text-gray-400">
+                                Already have an account?{" "}
+                                <Link to="/login" className="text-blue-400 hover:text-blue-300">
+                                    Sign in
+                                </Link>
+                            </p>
+                        </div>
+                    </div>
+                </SpotlightCard>
+            </div>
 
-                <form className='flex flex-col  gap-4 bg-black border-4 border-zinc-800 border-solid p-4 rounded-lg shadow-lg w-96' onSubmit={handleSubmit}>
-                    <h2 className='text-2xl font-semibold text-center text-zinc-100'>Register</h2>
-                    <input
-                        type='text'
-                        placeholder='Username'
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className='p-3  border-zinc-800 border-4  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600'
-                        minLength={3}
-                        maxLength={20}
-                    />
-                    <input
-                        type='email'
-                        placeholder='Email'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className='p-3  border-zinc-800 border-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600'
-                        minLength={3}
-                        maxLength={20}
-                    />
-                    <input
-                        type='password'
-                        placeholder='Password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className='p-3 border-4  border-zinc-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600'
-                        minLength={6}
-                        maxLength={20}
-                    />
-                    <button
-                        type='submit'
-                        className='bg-black border-4 border-zinc-800 text-white font-semibold py-4 px-5 rounded-md hover:bg-linear-to-r hover:from-black hover:to-blue-500 transition duration-300'
-                    >
-                        Register
-                    </button>
-                </form>
-            </SpotlightCard>
-            {error && <h3 className="text-red-500 text-center">{error}</h3>}
-
-            <Dock
-                items={items}
-                panelHeight={68}
-                baseItemSize={50}
-                magnification={55}
-            />
-
+           
         </div>
     );
 };
