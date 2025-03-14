@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Register from "../Views/Register";
 import Login from "../Views/Login";
 import Profile from "../Views/Profile";
@@ -9,11 +9,13 @@ import Home from "../Views/Home";
 import NotFound from "../Views/NotFound";
 import Search from "../Views/Search";
 import SearchProfile from "../Views/SearchProfile";
+import Hero from "../Views/Hero"; 
 
 const AppRoutes = () => {
     return (
-        <Router basename="/">
+        <Router>
             <Routes>
+                <Route path="/" element={<Hero />} />
                 <Route path="/home" element={<Protected><Home /></Protected>} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
