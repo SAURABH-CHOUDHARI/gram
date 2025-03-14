@@ -5,7 +5,7 @@ const app = express();
 
 // ✅ Secure CORS setup
 app.use(cors({
-    origin: ["http://localhost:5173", "https://your-frontend.com"], // Only allow trusted domains
+    origin: ["http://localhost:5173", "https://gram-ll0f.onrender.com"], // Only allow trusted domains
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], // Allow necessary HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allow auth headers
     credentials: true // Enable cookies & authorization headers
