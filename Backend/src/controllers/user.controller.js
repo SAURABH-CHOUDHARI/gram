@@ -209,3 +209,44 @@ module.exports.auth =  (req,res) => {
         return res.status(500).json({messsage:"Internal Server Error"})
     }
 }
+module.exports.getConversations = async (req, res) => {
+    try {
+        // Use the static method to get conversations
+        const { conversations, userIds } = await messageModel.getUserConversations(req.user._id);
+        
+        // Fetch user details for all conversation partners
+        const userDetails = await userModel.find(
+            { _id: { $in: userIds } },
+            { username: 1, profileImage: 1 }
+        );
+        
+        // Create a map of user details for quick lookup
+        const userDetailsMap = {};
+        userDetails.forEach(user => {
+            userDetailsMap[user._id.toString()] = {
+                username: user.username,
+                profileImage: user.profileImage
+            };
+        });
+        
+        // Enhance conversation data with user details
+        const enhancedConversations = conversations.map(conversation => {
+            const userInfo = userDetailsMap[conversation.userId] || {};
+            return {
+                ...conversation,
+                username: userInfo.username,
+                profileImage: userInfo.profileImage
+            };
+        });
+
+        
+        res.status(200).json({
+            conversations: enhancedConversations,
+            message: "Conversations successfully fetched",
+            currentUser: req.user
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send(err.message);
+    }
+};

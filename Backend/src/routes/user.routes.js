@@ -12,5 +12,6 @@ router.post("/searched-profile", userMiddleware.authUser ,userCotroller.getSearc
 router.patch("/togglefollow", userMiddleware.authUser ,userCotroller.toggleFollow)
 router.get("/logout", userMiddleware.authUser ,userCotroller.logout)
 router.get("/get-messages",userMiddleware.authUser,userCotroller.getMessages)
+router.get("/conversations",userMiddleware.authUser,userCotroller.getConversations)
 
 module.exports = router
