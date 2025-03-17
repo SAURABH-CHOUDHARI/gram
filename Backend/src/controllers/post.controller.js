@@ -72,6 +72,10 @@ module.exports.singlePostController = async (req, res) => {
     try {
         const { postId } = req.params;
 
+        if (!postId) {
+            return res.status(400).json({ message: "Post is required" })
+        }
+
         const post = await postModel.findById(postId)
             .populate({
                 path: "author",
@@ -104,6 +108,48 @@ module.exports.singlePostController = async (req, res) => {
         post.comments = comments;
 
         return res.status(200).json(post);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+module.exports.deletePostController = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const userId = req.user._id;
+
+
+        if (!postId) {
+            return res.status(400).json({ message: "Post ID is required" });
+        }
+
+        const post = await postModel.findById(postId);
+
+        
+
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (!post.author.equals(userId)) {
+            return res.status(403).json({ message: "You are not authorized to delete this post" });
+        }
+
+        // Find all comments related to the post
+        const comments = await commentModel.find({ post: postId });
+
+        // Extract all comment IDs
+        const commentIds = comments.map(comment => comment._id);
+
+        // Delete post, comments, and all likes on those comments
+        await Promise.all([
+            postModel.findByIdAndDelete(postId),               // Delete post
+            commentModel.deleteMany({ post: postId }),         // Delete all comments for the post
+            commentLikeModel.deleteMany({ comment: { $in: commentIds } }) // Delete all likes on those comments
+        ]);
+
+        return res.status(200).json({ message: "Post deleted successfully along with comments and likes" });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error", error: error.message });
