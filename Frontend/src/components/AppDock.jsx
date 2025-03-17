@@ -25,6 +25,7 @@ const AppDock = ({ additionalItems = [] }) => {
             
             // Clear token from localStorage
             localStorage.removeItem('token');
+            localStorage.removeItem("Authorization");
             
             // Redirect to login page
             navigate('/login');
@@ -32,6 +33,7 @@ const AppDock = ({ additionalItems = [] }) => {
             console.error('Logout error:', error);
             // Even if the server request fails, we should still log out the user locally
             localStorage.removeItem('token');
+            localStorage.removeItem("Authorization");
             navigate('/login');
         }
     };
@@ -42,7 +44,8 @@ const AppDock = ({ additionalItems = [] }) => {
         { icon: <img src={Icons.Post} alt="Create-Post" width={30} height={30} />, label: 'Create Post', onClick: () => navigate("/create-post") },
         { icon: <img src={Icons.Profile} alt="Profile" width={30} height={30} />, label: 'Profile', onClick: () => navigate("/profile") },
         { icon: <img src={Icons.Search} alt="Search" width={30} height={30} />, label: 'Search', onClick: () => navigate("/search") },
-        { icon: <img src={Icons.Logout} alt="Search" width={30} height={30} />, label: 'Log Out', onClick: () => setShowLogoutModal(true) },
+        { icon: <img src={Icons.Messages} alt="Search" width={30} height={30} />, label: 'Messages', onClick: () => navigate("/messages") },
+        { icon: <img src={Icons.Logout} alt="Log Out" width={30} height={30} />, label: 'Log Out', onClick: () => setShowLogoutModal(true) },
         // ... other common routes
     ];
 
@@ -52,8 +55,8 @@ const AppDock = ({ additionalItems = [] }) => {
         <>
             <Dock
                 items={allItems}
-                panelHeight={68}
-                baseItemSize={50}
+                panelHeight={50}
+                baseItemSize={40}
                 magnification={55}
             />
             

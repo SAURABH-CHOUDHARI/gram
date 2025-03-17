@@ -5,6 +5,7 @@ import SearchSVG from "./search-5-svgrepo-com.svg";
 import Register from "./register.svg";
 import Login from "./LoginSVG.svg";
 import LogOut from "./shutdown-small-svgrepo-com.svg"
+import Messages from "./Messages.svg";
 
 const Icons = {
     Profile: ProfileSVG,
@@ -13,7 +14,8 @@ const Icons = {
     Search: SearchSVG,
     Register: Register,
     Login: Login,
-    Logout: LogOut
+    Logout: LogOut,
+    Messages: Messages,
 };
 
 export default Icons;
