@@ -79,34 +79,55 @@ const SearchProfile = () => {
     }
 
     return (
-        <div className='min-h-screen max-h-screen bg-black text-white flex flex-col items-center p-6'>
-            <div className='min-w-[20rem] max-w-[32rem] w-full border border-zinc-800 p-6 rounded-lg bg-zinc-900 flex'>
-                <div className='flex items-center justify-between w-full px-2'>
-                    <img src={profile?.profileImage} alt='Profile' className='w-24 h-24 rounded-full border-2 border-zinc-800' />
-                    <div className='flex flex-col items-start gap-4 text-center'>
-                        <div className='flex gap-6 text-center w-full justify-between'>
-                            <h2 className='text-2xl font-bold'>{profile?.username}</h2>
+        <div className='min-h-[100dvh] max-h-[100dvh] bg-black text-white flex flex-col items-center '>
+            <div className='min-w-[20rem] max-w-[32rem] w-full border border-zinc-800 p-6 rounded-lg bg-zinc-900'>
+                {/* Profile header with image and details */}
+                <div className='flex mb-6'>
+                    {/* Profile image */}
+                    <div className='mr-8'>
+                        <img
+                            src={profile?.profileImage}
+                            alt='Profile'
+                            className='w-20 h-20 rounded-full border-2 border-zinc-800'
+                        />
+                    </div>
+
+                    {/* Profile info */}
+                    <div className='flex flex-col justify-between'>
+                        {/* Username and follow button */}
+                        <div className='flex items-center mb-4'>
+                            <h2 className='text-xl font-semibold mr-4'>{profile?.username}</h2>
                             {profile?.username !== loggedInProfile && (
                                 <button
                                     onClick={handleFollow}
-                                    className={`px-4 py-2 rounded-lg text-white ${isFollowing ? 'bg-red-500' : 'bg-blue-500'}`}
+                                    className={`px-4 py-1.5 rounded text-sm font-medium text-white ${isFollowing ? 'bg-red-500' : 'bg-blue-500'}`}
                                 >
                                     {isFollowing ? "Unfollow" : "Follow"}
                                 </button>
                             )}
                         </div>
-                        <div className='flex gap-10'>
-                            <div>
-                                <p className='text-xl font-semibold'>{profile?.posts.length}</p>
-                                <p className='text-gray-400 text-sm'>Posts</p>
+
+                        {/* Stats row */}
+                        <div className='flex space-x-6'>
+                            <div className='text-center'>
+                                <span className='font-semibold'>{profile?.posts.length}</span>
+                                <p className='text-gray-400 text-sm'>posts</p>
                             </div>
-                            <div onClick={() => { setModalTitle("Followers"); setModalUsers(profile?.followers); setIsModalOpen(true); }} className='cursor-pointer'>
-                                <p className='text-xl font-semibold'>{profile?.followers.length}</p>
-                                <p className='text-gray-400 text-sm'>Followers</p>
+
+                            <div
+                                onClick={() => { setModalTitle("Followers"); setModalUsers(profile?.followers); setIsModalOpen(true); }}
+                                className='cursor-pointer text-center'
+                            >
+                                <span className='font-semibold'>{profile?.followers.length}</span>
+                                <p className='text-gray-400 text-sm'>followers</p>
                             </div>
-                            <div onClick={() => { setModalTitle("Following"); setModalUsers(profile?.following); setIsModalOpen(true); }} className='cursor-pointer'>
-                                <p className='text-xl font-semibold'>{profile?.following.length}</p>
-                                <p className='text-gray-400 text-sm'>Following</p>
+
+                            <div
+                                onClick={() => { setModalTitle("Following"); setModalUsers(profile?.following); setIsModalOpen(true); }}
+                                className='cursor-pointer text-center'
+                            >
+                                <span className='font-semibold'>{profile?.following.length}</span>
+                                <p className='text-gray-400 text-sm'>following</p>
                             </div>
                         </div>
                     </div>
@@ -114,14 +135,13 @@ const SearchProfile = () => {
             </div>
 
             <FollowersModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={modalTitle} users={modalUsers} />
-
             <div className='min-w-[20rem] max-w-[32rem] w-full mt-2 border border-zinc-800 rounded-lg bg-zinc-900 overflow-hidden'>
                 <h3 className='text-lg font-semibold px-6 py-4 border-b border-zinc-800'>
                     <GradientText colors={["#40ffaa", "#4079ff", "#40ffaa", "#4079ff", "#40ffaa"]} animationSpeed={1} showBorder={false}>
                         Posts
                     </GradientText>
                 </h3>
-                <div className='max-h-[65vh] overflow-y-scroll p-6 scrollbar-hide'>
+                <div className='max-sm:h-[58dvh] md:max-h-[70dvh] overflow-y-scroll p-6 scrollbar-hide'>
                     <div className='flex flex-col gap-4'>
                         {profile?.posts?.length > 0 ? (
                             profile.posts.map(post => (

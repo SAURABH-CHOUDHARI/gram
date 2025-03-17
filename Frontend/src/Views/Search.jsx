@@ -43,8 +43,8 @@ const Search = () => {
     
 
     return (
-        <div className='h-screen w-full bg-black flex justify-center items-center'>
-            <div className='w-96 bg-zinc-900 rounded-lg overflow-hidden p-2 border-zinc-800 border'>
+        <div className='h-screen w-full bg-black flex justify-center py-3'>
+            <div className='w-96  rounded-lg overflow-hidden border-zinc-800 border'>
                 <img src={Icons.Search} alt="" className='h-10 w-10 absolute' />
                 
                 {/* Search Input */}
