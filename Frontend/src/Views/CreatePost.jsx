@@ -50,25 +50,28 @@ const CreatePost = () => {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            navigate("/profile");
-        } catch (err) {
-            setError(err.response?.data?.message || "An error occurred");
-        } finally {
-            setLoading(false);
+
+            // Only clear form after successful submission
             setMedia(null);
             setPreview(null);
             setCaption('');
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
             }
+
+            navigate("/profile");
+        } catch (err) {
+            setError(err.response?.data?.message || "An error occurred");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex flex-col">
+        <div className="min-h-[100dvh] max-h-[100dvh] bg-black text-white flex flex-col overflow-hidden">
             <div className="container mx-auto px-4 py-8 flex-grow flex items-center">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-12 w-full">
-                    
+
                     {/* Left section - Info and Tips - Hidden on mobile */}
                     <div className="hidden md:flex md:flex-1 md:flex-col space-y-6 max-w-md">
                         <div className="space-y-2">
@@ -108,7 +111,7 @@ const CreatePost = () => {
                     </div>
 
                     {/* Visible heading for mobile only */}
-                    <div className="md:hidden w-full text-center mb-6">
+                    <div className="md:hidden w-full text-center ">
                         <h1 className="text-3xl font-bold">
                             <GradientText
                                 colors={["#a855f7", "#3b82f6", "#a855f7", "#3b82f6", "#a855f7"]}
@@ -123,12 +126,12 @@ const CreatePost = () => {
                     {/* Right section - Upload Form - Full width on mobile */}
                     <div className="w-full md:flex-1 md:max-w-md">
                         <div className="bg-zinc-900/30 p-6 md:p-8 rounded-xl border-4 border-zinc-800 shadow-2xl">
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="text-center mb-6">
+                            <form onSubmit={handleSubmit} className="space-y-3">
+                                <div className="text-center mb-2">
                                     <h2 className="text-xl md:text-2xl font-bold mb-2">Upload Your Post</h2>
                                     <p className="text-gray-400">Select an image and add your caption</p>
                                 </div>
-                                
+
                                 {/* Upload Area */}
                                 <div className="relative">
                                     <input
@@ -149,8 +152,10 @@ const CreatePost = () => {
                                                 />
                                                 <button
                                                     type="button"
-                                                    onClick={handleDeselect}
-                                                    className="absolute top-2 right-2 rounded-full h-8 w-8 text-white bg-black bg-opacity-50 hover:bg-red-600 flex items-center justify-center shadow-lg"
+                                                    onClick={(e) => {
+                                                        handleDeselect();
+                                                    }}
+                                                    className="absolute top-[-20%] right-[-10%] rounded-full h-8 w-8 text-white bg-black bg-opacity-50 hover:bg-red-600 flex items-center justify-center shadow-lg"
                                                 >
                                                     ✕
                                                 </button>
@@ -165,10 +170,10 @@ const CreatePost = () => {
                                         )}
                                     </div>
                                 </div>
-                                
+
                                 {/* Caption Input */}
                                 <div>
-                                    <label htmlFor="caption" className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label htmlFor="caption" className="block text-sm font-medium text-gray-300 ">
                                         Caption
                                     </label>
                                     <input
@@ -178,16 +183,16 @@ const CreatePost = () => {
                                         value={caption}
                                         onChange={(e) => setCaption(e.target.value)}
                                         className="w-full bg-zinc-800 border-none rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                                        />
+                                    />
                                 </div>
-                                        <span className='text-xs'>"Skip the caption, let AI handle it.</span>
-                                
+                                <span className='text-xs'>"Skip the caption, let AI handle it.</span>
+
                                 {error && (
                                     <div className="bg-red-900/30 border border-red-800 text-red-300 p-3 rounded-lg">
                                         {error}
                                     </div>
                                 )}
-                                
+
                                 {/* Submit Button */}
                                 <button
                                     type="submit"
@@ -208,7 +213,7 @@ const CreatePost = () => {
                     </div>
                 </div>
             </div>
-            
+
             <div className="mt-auto">
                 <AppDock />
             </div>

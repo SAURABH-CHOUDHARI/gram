@@ -32,7 +32,7 @@ const Home = () => {
     }, []);
 
     return (
-        <div className='min-h-screen max-h-screen bg-black text-white flex flex-col items-center p-6'>
+        <div className='min-h-[100dvh] max-h-[100dvh] bg-black text-white flex flex-col items-center overflow-hidden'>
             {/* Header */}
             <div className='w-full max-w-lg mb-4 flex items-center justify-center'>
                 <h2 className='text-3xl font-bold text-center'>

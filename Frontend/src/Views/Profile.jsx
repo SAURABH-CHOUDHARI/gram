@@ -4,7 +4,6 @@ import AppDock from "../components/AppDock";
 import GradientText from '../components/GradientText';
 import FollowersModal from '../components/FollowersModal';
 import PostCard from '../components/PostCard'; // Import the new component
-import { div } from 'framer-motion/client';
 
 const Profile = () => {
     const [profile, setProfile] = useState(null);
@@ -56,12 +55,12 @@ const Profile = () => {
     }
 
     return (
-        <div className='min-h-screen max-h-screen bg-black text-white flex flex-col items-center p-6'>
+        <div className='min-h-[100dvh] max-h-[100dvh] bg-black text-white flex flex-col items-center '>
             {/* Profile Header Section */}
             <div className='min-w-[20rem] max-w-[32rem] w-full border flex-col border-zinc-800 p-6 rounded-lg bg-zinc-900 flex'>
                 <div className='flex items-center justify-between w-full px-2'>
                     <div className='text-center'>
-                        <img src={profile?.profileImage} alt='Profile' className='w-24 h-24 rounded-full border-2 border-zinc-800 ' />
+                        <img src={profile?.profileImage} alt='Profile' className='w-14 h-14 rounded-full border-2 border-zinc-800 ' />
                         <h2 className='text-xl font-bold'>{profile?.username}</h2>
                     </div>
                     <div className='flex flex-col gap-4 text-center'>
@@ -87,7 +86,7 @@ const Profile = () => {
             </div>
 
             {/* Scrollable Posts Section */}
-            <div className="min-w-[20rem] max-w-[32rem] h-[65dvh] w-full mt-2 border border-zinc-800 rounded-lg bg-zinc-900 flex flex-col">
+            <div className="min-w-[20rem] max-w-[32rem] h-[65dvh] md:h-[72dvh] w-full mt-2 border border-zinc-800 rounded-lg bg-zinc-900 flex flex-col">
                 <h3 className="text-lg font-semibold px-6 py-4 border-b border-zinc-800">
                     <GradientText
                         colors={["#40ffaa", "#4079ff", "#40ffaa", "#4079ff", "#40ffaa"]}
