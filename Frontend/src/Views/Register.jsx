@@ -22,6 +22,7 @@ const Register = () => {
             password
         }).then(response => {
             localStorage.setItem("token", response.data.token);
+            localStorage.setItem("Authorization", `Bearer ${response.data.token}`);
             Navigate("/profile");
         }).catch(err => {
             setError(err.response?.data?.message || "Registration failed. Please try again.");
@@ -73,7 +74,7 @@ const Register = () => {
                                     className='w-full p-3 border-4 border-zinc-800 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all'
                                     required
                                     minLength={3}
-                                    maxLength={20}
+                                    maxLength={40}
                                 />
                             </div>
                             

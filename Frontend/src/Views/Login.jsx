@@ -21,6 +21,7 @@ const Login = () => {
             password
         }).then(response => {
             localStorage.setItem("token", response.data.token);
+            localStorage.setItem("Authorization", `Bearer ${response.data.token}`);
             Navigate("/profile");
         }).catch(err => {
             setError(err.response?.data?.message || "Login failed. Please try again.");

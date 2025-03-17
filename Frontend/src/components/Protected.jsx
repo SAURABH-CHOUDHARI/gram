@@ -28,11 +28,13 @@ const Protected = ({ children }) => {
                 } else {
                     // Token is invalid
                     localStorage.removeItem("token");
+                    localStorage.removeItem("Authorization")
                     navigate("/login");
                 }
             } catch (error) {
                 console.error("Authentication error:", error);
                 localStorage.removeItem("token");
+                localStorage.removeItem("Authorization")
                 navigate("/login");
             } finally {
                 setLoading(false);
