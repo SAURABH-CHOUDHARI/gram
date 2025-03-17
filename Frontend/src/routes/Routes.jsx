@@ -10,6 +10,8 @@ import NotFound from "../Views/NotFound";
 import Search from "../Views/Search";
 import SearchProfile from "../Views/SearchProfile";
 import Hero from "../Views/Hero"; 
+import Messages from "../Views/Messages";
+
 
 const AppRoutes = () => {
     return (
@@ -23,6 +25,7 @@ const AppRoutes = () => {
                 <Route path="/create-post" element={<Protected><CreatePost /></Protected>} />
                 <Route path="/search" element={<Protected><Search /></Protected>} />
                 <Route path="/profile/:username" element={<Protected><SearchProfile /></Protected>} />
+                <Route path="/messages" element={<Protected><Messages /></Protected>} />
                 
                 {/* 404 Route (Catch-All) */}
                 <Route path="*" element={<NotFound/>} />
