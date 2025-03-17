@@ -105,7 +105,7 @@ module.exports.getSearchedProfile = async (req, res) => {
                 model: "user",
                 select: "username profileImage -_id",
             })
-            .select('-password -email -_id -__v')
+            .select('-password -email -__v')
             .lean();
 
 
