@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import GradientText from '../components/GradientText';
 import FollowersModal from '../components/FollowersModal';
 import NotFound from './NotFound';
@@ -16,6 +16,7 @@ const SearchProfile = () => {
     const [modalTitle, setModalTitle] = useState("");
     const [notFound, setNotFound] = useState(false);
 
+    const navigate = useNavigate();
     const { username } = useParams();
 
     useEffect(() => {
@@ -44,6 +45,20 @@ const SearchProfile = () => {
             console.error("Error fetching searched profile data:", error.response?.data || error.message);
             setNotFound(true);
         }
+    };
+
+
+    // Add this function to handle messaging
+    const handleMessage = () => {
+        // Store user info in localStorage or sessionStorage
+        localStorage.setItem('openChatUser', JSON.stringify({
+            userId: profile._id,
+            username: profile.username,
+            profileImage: profile.profileImage
+        }));
+
+        // Navigate to messages page
+        navigate('/messages');
     };
 
     const handleFollow = async () => {
@@ -98,12 +113,21 @@ const SearchProfile = () => {
                         <div className='flex items-center mb-4'>
                             <h2 className='text-xl font-semibold mr-4'>{profile?.username}</h2>
                             {profile?.username !== loggedInProfile && (
-                                <button
-                                    onClick={handleFollow}
-                                    className={`px-4 py-1.5 rounded text-sm font-medium text-white ${isFollowing ? 'bg-red-500' : 'bg-blue-500'}`}
-                                >
-                                    {isFollowing ? "Unfollow" : "Follow"}
-                                </button>
+                                <>
+                                    <button
+                                        onClick={handleFollow}
+                                        className={`px-4 py-1.5 rounded text-sm font-medium text-white ${isFollowing ? 'bg-red-500' : 'bg-blue-500'} mr-2`}
+                                    >
+                                        {isFollowing ? "Unfollow" : "Follow"}
+                                    </button>
+
+                                    <button
+                                        onClick={handleMessage}
+                                        className="px-4 py-1.5 rounded text-sm font-medium bg-gradient-to-r from-purple-500 to-blue-600 text-white"
+                                    >
+                                        Message
+                                    </button>
+                                </>
                             )}
                         </div>
 

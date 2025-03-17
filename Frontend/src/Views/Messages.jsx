@@ -67,6 +67,37 @@ const Messages = () => {
         }
     }, [selectedUser, socket]);
 
+    useEffect(() => {
+        // Check if there's a stored user to open chat with
+        const storedUser = localStorage.getItem('openChatUser');
+        if (storedUser) {
+            const userToOpen = JSON.parse(storedUser);
+
+            // Find the user in conversations
+            const foundUser = conversations.find(convo => convo.userId === userToOpen.userId);
+
+            if (foundUser) {
+                // If user exists in conversations, select them
+                setSelectedUser(foundUser);
+            } else {
+                // If user is not in conversations, create a new conversation object
+                const newConversation = {
+                    userId: userToOpen.userId,
+                    username: userToOpen.username,
+                    profileImage: userToOpen.profileImage,
+                    lastMessage: ''
+                };
+
+                // Add to conversations and select
+                setConversations(prev => [...prev, newConversation]);
+                setSelectedUser(newConversation);
+            }
+
+            // Clear the stored user after using it
+            localStorage.removeItem('openChatUser');
+        }
+    }, [conversations]);
+
     const fetchConversations = async () => {
         try {
             const response = await axios.get("https://gram-ks17.onrender.com/users/conversations", {
@@ -74,6 +105,27 @@ const Messages = () => {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
+            
+            // Check if we have a pending conversation to add
+            const storedUser = localStorage.getItem('openChatUser');
+            if (storedUser) {
+                const userToOpen = JSON.parse(storedUser);
+                // Check if this user is already in the conversations
+                const exists = response.data.conversations.some(
+                    convo => convo.userId === userToOpen.userId
+                );
+                
+                if (!exists) {
+                    // Add the new user to conversations
+                    response.data.conversations.push({
+                        userId: userToOpen.userId,
+                        username: userToOpen.username,
+                        profileImage: userToOpen.profileImage,
+                        lastMessage: ''
+                    });
+                }
+            }
+            
             setConversations(response.data.conversations);
             setCurrentUser(response.data.currentUser);
             setLoading(false);
@@ -86,10 +138,23 @@ const Messages = () => {
     const handleSendMessage = () => {
         if (!newMessage.trim() || !selectedUser || !socket) return;
 
+        // Send the message
         socket.emit('chat-message', {
             receiver: selectedUser.userId,
             text: newMessage
         });
+
+        // If this is a new conversation, we can add the message to the UI immediately
+        // This provides instant feedback even if the server hasn't returned the message yet
+        if (messages.length === 0) {
+            const tempMessage = {
+                _id: 'temp-' + Date.now(),
+                sender: currentUser?._id,
+                text: newMessage,
+                createdAt: new Date().toISOString()
+            };
+            setMessages([tempMessage]);
+        }
 
         setNewMessage('');
     };
@@ -129,13 +194,13 @@ const Messages = () => {
             {/* Messages Header */}
             <div className='w-full max-w-[42rem] flex items-center mb-2 px-1'>
                 {/* Hamburger menu for mobile */}
-                <button 
-                    className="mr-2 text-white md:hidden" 
+                <button
+                    className="mr-2 text-white md:hidden"
                     onClick={() => setSidebarOpen(!sidebarOpen)}
                 >
                     <FaBars size={20} />
                 </button>
-                
+
                 <h1 className="text-2xl sm:text-3xl font-bold">
                     <GradientText
                         colors={["#a855f7", "#3b82f6", "#a855f7", "#3b82f6", "#a855f7"]}
@@ -145,7 +210,7 @@ const Messages = () => {
                         Messages
                     </GradientText>
                 </h1>
-                
+
                 {selectedUser && (
                     <div className="flex items-center ml-auto md:hidden">
                         <div className="h-6 w-6 rounded-full mr-2">
@@ -160,18 +225,18 @@ const Messages = () => {
             <div className='w-full max-w-[42rem] h-[85dvh] flex relative'>
                 {/* Mobile sidebar overlay */}
                 {sidebarOpen && (
-                    <div 
+                    <div
                         className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
                         onClick={() => setSidebarOpen(false)}
                     ></div>
                 )}
-                
+
                 {/* Conversations List - Mobile Sidebar */}
                 <div className={`fixed md:relative top-0 left-0 h-full w-3/4 max-w-[280px] md:w-1/3 border border-zinc-800 rounded-r-lg md:rounded-l-lg bg-zinc-900 flex flex-col z-20 transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
                     <div className="flex items-center justify-between px-3 py-3 border-b border-zinc-800">
                         <h3 className="text-lg font-semibold">Chats</h3>
-                        <button 
-                            className="text-white md:hidden" 
+                        <button
+                            className="text-white md:hidden"
                             onClick={() => setSidebarOpen(false)}
                         >
                             <FaTimes size={18} />
@@ -233,7 +298,7 @@ const Messages = () => {
                                                     className={`max-w-[80%] sm:max-w-[70%] rounded-lg px-3 py-2 ${isCurrentUser
                                                         ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white'
                                                         : 'bg-zinc-800 text-white'
-                                                    }`}
+                                                        }`}
                                                 >
                                                     <p className="text-sm sm:text-base">{msg.text}</p>
                                                     <p className="text-xs text-right mt-1 opacity-70">
